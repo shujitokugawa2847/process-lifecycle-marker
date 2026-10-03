@@ -42,3 +42,10 @@ Trade-off: the library writes exactly two lines per run and nothing in between. 
 - `startup()` may be called exactly once. Calling it twice raises `RuntimeError`. Calling `shutdown()` before `startup()` raises `RuntimeError`.
 - You must pass exactly one of `logger` or `stream`; passing both or neither raises `ValueError`.
 - Uptime uses `time.monotonic` by default so it is immune to wall-clock adjustments. Both the monotonic clock and the wall clock are injectable via constructor arguments for testing.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
